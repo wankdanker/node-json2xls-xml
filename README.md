@@ -5,7 +5,7 @@ Minimalist JSON to XLS (Excel Office XML) writer written by Pierre Metrailler <p
 
 ## Installation
 
-```shell
+```
 [~] ➔ npm install https://github.com/tobius/node-json2officexml/tarball/master
 ```
 
