@@ -1,7 +1,7 @@
 {
   "name": "json2officexml",
   "description": "Minimalist JSON to XLS (Excel Office XML) writer.",
-  "version": "0.0.5.1",
+  "version": "0.0.5-1",
   "dependencies": {
     "xmlbuilder" : ">=0.3.1"
   },
