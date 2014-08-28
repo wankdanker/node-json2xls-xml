@@ -40,7 +40,7 @@ ExcelOfficeXmlWriter.prototype.writeDoc = function (obj) {
     Object.keys(o).forEach(function (sheetTitle) {
         var rows = o[sheetTitle];
 
-        if (!Array.isArray(rows) {
+        if (!Array.isArray(rows)) {
             rows = [rows];
         }
 
