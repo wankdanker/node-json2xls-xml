@@ -1,44 +1,40 @@
 var xmlbuilder = require('xmlbuilder');
     
-var j2o = exports;
-
 var XMLBANNEDCHARS = /[\u0000-\u0008\u000B-\u000C\u000E-\u001F\uD800-\uDFFF\uFFFE-\uFFFF]/;
 
-
-var ExcelOfficeXmlWriter = j2o.ExcelOfficeXmlWriter = function(options) {
-
-};
-
-ExcelOfficeXmlWriter.prototype.writeDoc = function(doc) {
-    if (!doc) return;
-    return _writeExcelDoc(this, doc);
-};
-
-j2o.createExcelOfficeXmlWriter = function(path, options) {
+module.exports = function (options) {
     return new ExcelOfficeXmlWriter(options);
+}
+
+function ExcelOfficeXmlWriter (options) {
+    var self = this;
+
+    self.options = options;
 };
 
 function _isoDateString(d){  
-    function pad(n){return n<10 ? '0'+n : n}  
-    return d.getUTCFullYear()+'-'
-    + pad(d.getUTCMonth()+1)+'-'  
-    + pad(d.getUTCDate())+'T'  
-    + pad(d.getUTCHours())+':'  
-    + pad(d.getUTCMinutes())+':'  
-    + pad(d.getUTCSeconds())+".000"  ;//'Z'  
+    return d.toISOString().split('Z')[0];
 }
 
-function _writeExcelDoc(writer, inobj) {
+ExcelOfficeXmlWriter.prototype.writeDoc = function (obj) {
+    var self = this;
+
     var XMLHDR = { 'version': '1.0'};
-    var doc = xmlbuilder.create('ss:Workbook').att("xmlns:ss","urn:schemas-microsoft-com:office:spreadsheet");
-    var child = doc;//doc.ele('ss:Workbook', XMLHDR).att("xmlns:ss","urn:schemas-microsoft-com:office:spreadsheet");
+    var doc = xmlbuilder.create('ss:Workbook')
+    	.att("xmlns", "urn:schemas-microsoft-com:office:spreadsheet")
+        .att("xmlns:o", "urn:schemas-microsoft-com:office:office")
+        .att("xmlns:x", "urn:schemas-microsoft-com:office:excel")
+        .att("xmlns:html", "http://www.w3.org/TR/REC-html140")
+        .att("xmlns:ss","urn:schemas-microsoft-com:office:spreadsheet");
+
+    var child = doc;
     var o;
 
-    if (Array.isArray(inobj)) {
-        o = { Export : inobj };
+    if (Array.isArray(obj)) {
+        o = { Export : obj };
     }
     else {
-        o = inobj;
+        o = obj;
     }
 
     Object.keys(o).forEach(function (sheetTitle) {
@@ -47,35 +43,35 @@ function _writeExcelDoc(writer, inobj) {
         //get columns titles based on key's from the first record in the rows array
         var columns = Object.keys(rows[0]);
 
-        child = child.ele("ss:Worksheet").att("ss:Name", sheetTitle).ele("ss:Table");
+        child = child.ele("Worksheet").att("ss:Name", sheetTitle).ele("ss:Table");
         columns.forEach(function(columnTitle) {
-            child = child.ele("ss:Column").att("ss:AutoFitWidth", "1").up();
+            child = child.ele("Column").att("ss:AutoFitWidth", "1").up();
         });
-        child = child.ele("ss:Row");
+        child = child.ele("Row");
         columns.forEach(function(columnTitle){
-            child = child.ele("ss:Cell").ele("ss:Data").att("ss:Type", "String").txt(columnTitle).up().up();
+            child = child.ele("Cell").ele("Data").att("ss:Type", "String").txt(columnTitle).up().up();
         });
         child = child.up();
         rows.forEach(function (record) {
-            child = child.ele("ss:Row");
+            child = child.ele("Row");
             Object.keys(record).forEach(function (columnTitle) {
                 var val = record[columnTitle];
 
                 if (typeof val !== 'function') {
                     if (typeof val === 'object') {
                         if (val instanceof Date) {
-                            child = child.ele("ss:Cell").ele("ss:Data").att("ss:Type", "DateTime").raw(_isoDateString((val))).up().up();                    
+                            child = child.ele("Cell").ele("Data").att("ss:Type", "DateTime").raw(_isoDateString(val)).up().up();                    
                         } else {
                             if (val instanceof Array) { }
                         } 
                     } else {
                         if ((typeof val) === 'boolean') {
                         } else if ((typeof val) === 'number') {
-                            child = child.ele("ss:Cell").ele("ss:Data").att("ss:Type", "Number").txt(val).up().up();                    
+                            child = child.ele("Cell").ele("Data").att("ss:Type", "Number").txt(val).up().up();                    
                         } else if (val !== undefined){
-                          		    //chr = str.match(chars);
-    			            var str = val.split('\u000b').join(' ');
-    			            child = child.ele("ss:Cell").ele("ss:Data").att("ss:Type", "String").txt(str).up().up();                    
+                                    //chr = str.match(chars);
+                            var str = val.split('\u000b').join(' ');
+                            child = child.ele("Cell").ele("Data").att("ss:Type", "String").txt(str).up().up();                    
                         }
                     }
                 }

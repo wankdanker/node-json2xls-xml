@@ -18,7 +18,7 @@
   "keywords": [
     "xls"
   ],
-  "main": "./lib/json2officexml",
+  "main": "index.js",
   "dependencies": {
     "xmlbuilder" : ">= 0.3.1"
   },

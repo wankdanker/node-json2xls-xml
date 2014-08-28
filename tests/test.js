@@ -3,37 +3,21 @@ var fs = require("fs");
 var assert = require("assert");
 var js2o = require("../");
 
-var writer = js2o.createExcelOfficeXmlWriter();
+var writer = js2o();
+var expected = fs.readFileSync(__dirname + '/test.xls', { encoding : 'utf8' });
 
 var doc1 = {
-    "columns" : [],
-    "rows" : [
-        { "firstname" : "John", "lastname": "Doo"},
-        { "firstname" : "Foo", "lastname": "Bar", "age": 23, "weight": 25.7876, "birth" : new Date()}
+    "sheet1" : [
+        { col1 : 'asdf', col2 : 'sdf3', col3 : 'sdf34', date1 : new Date('8/28/2014 12:37:19') }
+        , { col1 : 'asdf', col2 : 'sdf3', col3 : 'sdf34', date1 : new Date('8/28/2014 12:38:10') }
     ]
-    
-};
-
-var doc2 = {
-	"sheets" : [
-		{
-			"name" : "Feuil1",
-	    	"columns" : [],
-	    	"rows" : [
-	        	{ "firstname" : "John", "lastname": "Doo"},
-	        	{ "firstname" : "Foo", "lastname": "Bar", "age": 23, "weight": 25.7876, "birth" : new Date()}
-	    	]
-    	},
-    	{
-			"name" : "Feuil2",
-	    	"columns" : [],
-	    	"rows" : [
-	        	{ "firstname" : "Rene", "lastname": "Malin"},
-	        	{ "firstname" : "Foo", "lastname": "foobar", "age": 73, "weight": 22225.33, "birth" : new Date()}
-	    	]
-    	}
+    , "sheet2" : [
+        { col1 : 'asdf', col2 : 'sdf3', col3 : 'sdf34' }
+        , { col1 : 'asdf', col2 : 'sdf3', col3 : 'sdf34' }
     ]
 };
 
-console.log(writer.writeDoc(doc1).toString({ pretty: true }));
-console.log(writer.writeDoc(doc2).toString({ pretty: true }));
+
+var result = writer.writeDoc(doc1).toString({ pretty: true });
+console.log(result);
+assert.equal(expected, result);
