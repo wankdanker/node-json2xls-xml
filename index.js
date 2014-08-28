@@ -40,6 +40,10 @@ ExcelOfficeXmlWriter.prototype.writeDoc = function (obj) {
     Object.keys(o).forEach(function (sheetTitle) {
         var rows = o[sheetTitle];
 
+        if (!Array.isArray(rows) {
+            rows = [rows];
+        }
+
         //get columns titles based on key's from the first record in the rows array
         var columns = Object.keys(rows[0]);
 
