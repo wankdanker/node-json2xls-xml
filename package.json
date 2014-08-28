@@ -1,26 +1,34 @@
 {
-  "name": "json2officexml",
+  "name": "json2xls-xml",
   "description": "Minimalist JSON to XLS (Excel Office XML) writer.",
-  "version": "0.0.5-hotfix",
-  "authors": [{
-        "name": "Pierre Metrailler",
-        "email": "pierre@shockfish.com",
-        "url": "https://github.com/pimetral"
-    },{
-        "name": "Toby Miller",
-        "email": "tobius.miller@gmail.com",
-        "url": "https://github.com/tobius"
-  }],
+  "version": "0.0.0",
+  "authors": [
+    {
+      "name": "Pierre Metrailler",
+      "email": "pierre@shockfish.com",
+      "url": "https://github.com/pimetral"
+    },
+    {
+      "name": "Toby Miller",
+      "email": "tobius.miller@gmail.com",
+      "url": "https://github.com/tobius"
+    },
+    {
+      "name": "Dan VerWeire",
+      "email": "dverweire@gmail.com",
+      "url": "https://github.com/wankdanker"
+    }
+  ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/tobius/node-json2officexml.git"
+    "url": "git://github.com/wankdanker/node-json2xls-xml"
   },
   "keywords": [
     "xls"
   ],
   "main": "index.js",
   "dependencies": {
-    "xmlbuilder" : ">= 0.3.1"
+    "xmlbuilder": "^2.4.3"
   },
   "scripts": {
     "test": "for i in tests/test*.js; do node \"$i\"; done"
