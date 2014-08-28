@@ -11,7 +11,7 @@ Convert Javascript objects to XLS (XML format), based on json2officexml.
 ## Usage
 
 ```javascript
-var writer = require('json2xls-xml')();
+var j2xls = require('json2xls-xml')({ pretty : true });
 
 var doc = {
     Foo : [
@@ -24,5 +24,5 @@ var doc = {
     ]
 };
 
-console.log(writer.writeDoc(doc).toString({ pretty: true }));
+console.log(j2xls(doc));
 ```

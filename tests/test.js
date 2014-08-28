@@ -1,9 +1,8 @@
 var path = require("path");
 var fs = require("fs");
 var assert = require("assert");
-var js2o = require("../");
+var js2o = require("../")({ pretty : true });
 
-var writer = js2o();
 var expected = fs.readFileSync(__dirname + '/test.xls', { encoding : 'utf8' });
 
 var doc1 = {
@@ -18,6 +17,6 @@ var doc1 = {
 };
 
 
-var result = writer.writeDoc(doc1).toString({ pretty: true });
+var result = js2o(doc1);
 console.log(result);
 assert.equal(expected, result);

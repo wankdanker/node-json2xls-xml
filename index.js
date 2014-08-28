@@ -3,7 +3,11 @@ var xmlbuilder = require('xmlbuilder');
 var XMLBANNEDCHARS = /[\u0000-\u0008\u000B-\u000C\u000E-\u001F\uD800-\uDFFF\uFFFE-\uFFFF]/;
 
 module.exports = function (options) {
-    return new ExcelOfficeXmlWriter(options);
+    var writer =  new ExcelOfficeXmlWriter(options);
+
+    return function Write (doc) {
+    	return writer.writeDoc(doc).toString(options);
+    }
 }
 
 function ExcelOfficeXmlWriter (options) {
