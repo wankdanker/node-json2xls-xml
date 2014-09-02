@@ -48,7 +48,7 @@ ExcelOfficeXmlWriter.prototype.writeDoc = function (obj) {
             rows = [rows];
         }
 
-	if (!rows) {
+	if (!rows || !rows.length) {
 		return;
 	}
 
