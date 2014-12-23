@@ -38,7 +38,7 @@ ExcelOfficeXmlWriter.prototype.writeDoc = function (obj) {
         o = { Export : obj };
     }
     else {
-        o = obj;
+        o = obj || {};
     }
 
     Object.keys(o).forEach(function (sheetTitle) {
