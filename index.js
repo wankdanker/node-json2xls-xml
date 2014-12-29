@@ -6,7 +6,7 @@ module.exports = function (options) {
     var writer =  new ExcelOfficeXmlWriter(options);
 
     return function Write (doc) {
-    	return writer.writeDoc(doc).toString(options);
+        return writer.writeDoc(doc).toString(options);
     }
 }
 
@@ -25,7 +25,7 @@ ExcelOfficeXmlWriter.prototype.writeDoc = function (obj) {
 
     var XMLHDR = { 'version': '1.0'};
     var doc = xmlbuilder.create('ss:Workbook')
-    	.att("xmlns", "urn:schemas-microsoft-com:office:spreadsheet")
+        .att("xmlns", "urn:schemas-microsoft-com:office:spreadsheet")
         .att("xmlns:o", "urn:schemas-microsoft-com:office:office")
         .att("xmlns:x", "urn:schemas-microsoft-com:office:excel")
         .att("xmlns:html", "http://www.w3.org/TR/REC-html140")
@@ -41,19 +41,35 @@ ExcelOfficeXmlWriter.prototype.writeDoc = function (obj) {
         o = obj || {};
     }
 
+    if (typeof o !== 'object') {
+        return child.doc();
+    }
+
     Object.keys(o).forEach(function (sheetTitle) {
         var rows = o[sheetTitle];
+	var columns;
 
         if (!Array.isArray(rows) && rows) {
             rows = [rows];
         }
 
-	if (!rows || !rows.length) {
-		return;
-	}
+        if (!rows || !rows.length) {
+            return;
+        }
 
         //get columns titles based on key's from the first record in the rows array
-        var columns = Object.keys(rows[0] || {});
+	if (rows[0] && typeof rows[0] !== 'object') {
+		columns = [sheetTitle];
+		//make this an array of objects
+		rows = rows.map(function (row) {
+			var tmp = {};
+			tmp[sheetTitle] = row;
+			return tmp;
+		});
+	}
+        else {
+		columns = Object.keys(rows[0] || {});
+	}
 
         child = child.ele("Worksheet").att("ss:Name", sheetTitle).ele("ss:Table");
         columns.forEach(function(columnTitle) {
