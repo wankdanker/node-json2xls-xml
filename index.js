@@ -82,24 +82,24 @@ ExcelOfficeXmlWriter.prototype.writeDoc = function (obj) {
         child = child.up();
         rows.forEach(function (record) {
             child = child.ele("Row");
-            Object.keys(record).forEach(function (columnTitle) {
+            columns.forEach(function (columnTitle, columnIndex) {
                 var val = record[columnTitle];
 
                 if (typeof val !== 'function') {
-                    if (typeof val === 'object') {
+                    if (val && typeof val === 'object') {
                         if (val instanceof Date) {
-                            child = child.ele("Cell").ele("Data").att("ss:Type", "DateTime").raw(_isoDateString(val)).up().up();                    
+                            child = child.ele("Cell").att("ss:Index", columnIndex).ele("Data").att("ss:Type", "DateTime").raw(_isoDateString(val)).up().up();
                         } else {
                             if (val instanceof Array) { }
                         } 
                     } else {
                         if ((typeof val) === 'boolean') {
                         } else if ((typeof val) === 'number') {
-                            child = child.ele("Cell").ele("Data").att("ss:Type", "Number").txt(val).up().up();                    
-                        } else if (val !== undefined){
+                            child = child.ele("Cell").att("ss:Index", columnIndex).ele("Data").att("ss:Type", "Number").txt(val).up().up();
+                        } else if (val !== undefined && val !== null){
                                     //chr = str.match(chars);
                             var str = val.split('\u000b').join(' ');
-                            child = child.ele("Cell").ele("Data").att("ss:Type", "String").txt(str).up().up();                    
+                            child = child.ele("Cell").att("ss:Index", columnIndex).ele("Data").att("ss:Type", "String").txt(str).up().up(); 
                         }
                     }
                 }
