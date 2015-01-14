@@ -47,7 +47,7 @@ ExcelOfficeXmlWriter.prototype.writeDoc = function (obj) {
 
     Object.keys(o).forEach(function (sheetTitle) {
         var rows = o[sheetTitle];
-	var columns;
+        var columns;
 
         if (!Array.isArray(rows) && rows) {
             rows = [rows];
@@ -58,18 +58,18 @@ ExcelOfficeXmlWriter.prototype.writeDoc = function (obj) {
         }
 
         //get columns titles based on key's from the first record in the rows array
-	if (rows[0] && typeof rows[0] !== 'object') {
-		columns = [sheetTitle];
-		//make this an array of objects
-		rows = rows.map(function (row) {
-			var tmp = {};
-			tmp[sheetTitle] = row;
-			return tmp;
-		});
-	}
+        if (rows[0] && typeof rows[0] !== 'object') {
+            columns = [sheetTitle];
+            //make this an array of objects
+            rows = rows.map(function (row) {
+                var tmp = {};
+                tmp[sheetTitle] = row;
+                return tmp;
+            });
+        }
         else {
-		columns = Object.keys(rows[0] || {});
-	}
+            columns = Object.keys(rows[0] || {});
+        }
 
         child = child.ele("Worksheet").att("ss:Name", sheetTitle).ele("ss:Table");
         columns.forEach(function(columnTitle) {
