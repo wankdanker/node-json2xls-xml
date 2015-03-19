@@ -71,6 +71,14 @@ ExcelOfficeXmlWriter.prototype.writeDoc = function (obj) {
             columns = Object.keys(rows[0] || {});
         }
 
+	child = child.ele("Styles")
+			.ele("Style").att("ss:ID", "DateTime")
+				.ele("NumberFormat").att("ss:Format", "mm/dd/yyyy_hh:mm:ss")
+				.up()
+			.up()
+		.up()
+		;
+
         child = child.ele("Worksheet").att("ss:Name", sheetTitle).ele("ss:Table");
         columns.forEach(function(columnTitle) {
             child = child.ele("Column").att("ss:AutoFitWidth", "1").up();
@@ -88,7 +96,7 @@ ExcelOfficeXmlWriter.prototype.writeDoc = function (obj) {
                 if (typeof val !== 'function') {
                     if (val && typeof val === 'object') {
                         if (val instanceof Date) {
-                            child = child.ele("Cell").att("ss:Index", columnIndex).ele("Data").att("ss:Type", "DateTime").raw(_isoDateString(val)).up().up();
+                            child = child.ele("Cell").att("ss:Index", columnIndex).att("ss:StyleID","DateTime").ele("Data").att("ss:Type", "DateTime").raw(_isoDateString(val)).up().up();
                         } else {
                             if (val instanceof Array) { }
                         } 
