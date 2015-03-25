@@ -24,7 +24,7 @@ ExcelOfficeXmlWriter.prototype.writeDoc = function (obj) {
     var self = this;
 
     var XMLHDR = { 'version': '1.0'};
-    var doc = xmlbuilder.create('Workbook')
+    var doc = xmlbuilder.create('ss:Workbook')
         .att("xmlns", "urn:schemas-microsoft-com:office:spreadsheet")
         .att("xmlns:o", "urn:schemas-microsoft-com:office:office")
         .att("xmlns:x", "urn:schemas-microsoft-com:office:excel")
@@ -45,9 +45,9 @@ ExcelOfficeXmlWriter.prototype.writeDoc = function (obj) {
         return child.doc();
     }
 
-    child = child.ele("Styles")
-        .ele("Style").att("ID", "DateTime")
-            .ele("NumberFormat").att("Format", "mm/dd/yyyy_hh:mm:ss")
+    child = child.ele("ss:Styles")
+        .ele("ss:Style").att("ss:ID", "DateTime")
+            .ele("ss:NumberFormat").att("ss:Format", "mm/dd/yyyy_hh:mm:ss")
             .up()
         .up()
     .up();
@@ -78,18 +78,18 @@ ExcelOfficeXmlWriter.prototype.writeDoc = function (obj) {
             columns = Object.keys(rows[0] || {});
         }
 
-        child = child.ele("Worksheet").att("Name", sheetTitle).ele("Table");
+        child = child.ele("ss:Worksheet").att("ss:Name", sheetTitle).ele("ss:Table");
         columns.forEach(function(columnTitle, columnIndex) {
         columnIndex += 1;
-            child = child.ele("Column").att("Index",columnIndex).att("AutoFitWidth", "1").up();
+            child = child.ele("ss:Column").att("ss:Index",columnIndex).att("ss:AutoFitWidth", "1").up();
         });
-        child = child.ele("Row");
+        child = child.ele("ss:Row");
         columns.forEach(function(columnTitle){
-            child = child.ele("Cell").ele("Data").att("Type", "String").txt(columnTitle).up().up();
+            child = child.ele("ss:Cell").ele("ss:Data").att("ss:Type", "String").txt(columnTitle).up().up();
         });
         child = child.up();
         rows.forEach(function (record) {
-            child = child.ele("Row");
+            child = child.ele("ss:Row");
             columns.forEach(function (columnTitle, columnIndex) {
             columnIndex += 1;
                 var val = record[columnTitle];
@@ -97,18 +97,18 @@ ExcelOfficeXmlWriter.prototype.writeDoc = function (obj) {
                 if (typeof val !== 'function') {
                     if (val && typeof val === 'object') {
                         if (val instanceof Date) {
-                            child = child.ele("Cell").att("Index", columnIndex).att("StyleID","DateTime").ele("Data").att("Type", "DateTime").raw(_isoDateString(val)).up().up();
+                            child = child.ele("ss:Cell").att("ss:Index", columnIndex).att("ss:StyleID","DateTime").ele("Data").att("ss:Type", "DateTime").raw(_isoDateString(val)).up().up();
                         } else {
                             if (val instanceof Array) { }
                         } 
                     } else {
                         if ((typeof val) === 'boolean') {
                         } else if ((typeof val) === 'number') {
-                            child = child.ele("Cell").att("Index", columnIndex).ele("Data").att("Type", "Number").txt(val).up().up();
+                            child = child.ele("ss:Cell").att("ss:Index", columnIndex).ele("ss:Data").att("ss:Type", "Number").txt(val).up().up();
                         } else if (val !== undefined && val !== null){
                                     //chr = str.match(chars);
                             var str = val.split('\u000b').join(' ');
-                            child = child.ele("Cell").att("Index", columnIndex).ele("Data").att("Type", "String").txt(str).up().up(); 
+                            child = child.ele("ss:Cell").att("ss:Index", columnIndex).ele("ss:Data").att("ss:Type", "String").txt(str).up().up(); 
                         }
                     }
                 }
