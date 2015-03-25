@@ -79,15 +79,20 @@ ExcelOfficeXmlWriter.prototype.writeDoc = function (obj) {
         }
 
         child = child.ele("ss:Worksheet").att("ss:Name", sheetTitle).ele("ss:Table");
+
         columns.forEach(function(columnTitle, columnIndex) {
-        columnIndex += 1;
-            child = child.ele("ss:Column").att("ss:Index",columnIndex).att("ss:AutoFitWidth", "1").up();
+            columnIndex += 1;
+            child = child.ele("ss:Column").att("ss:Index", columnIndex).att("ss:AutoFitWidth", "1").up();
         });
+
         child = child.ele("ss:Row");
+
         columns.forEach(function(columnTitle){
             child = child.ele("ss:Cell").ele("ss:Data").att("ss:Type", "String").txt(columnTitle).up().up();
         });
+
         child = child.up();
+
         rows.forEach(function (record) {
             child = child.ele("ss:Row");
             columns.forEach(function (columnTitle, columnIndex) {
