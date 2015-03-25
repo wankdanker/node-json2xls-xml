@@ -45,6 +45,13 @@ ExcelOfficeXmlWriter.prototype.writeDoc = function (obj) {
         return child.doc();
     }
 
+    child = child.ele("ss:Styles")
+        .ele("ss:Style").att("ss:ID", "DateTime")
+            .ele("ss:NumberFormat").att("ss:Format", "mm/dd/yyyy_hh:mm:ss")
+            .up()
+        .up()
+    .up();
+
     Object.keys(o).forEach(function (sheetTitle) {
         var rows = o[sheetTitle];
         var columns;
@@ -71,43 +78,37 @@ ExcelOfficeXmlWriter.prototype.writeDoc = function (obj) {
             columns = Object.keys(rows[0] || {});
         }
 
-	child = child.ele("Styles")
-			.ele("Style").att("ss:ID", "DateTime")
-				.ele("NumberFormat").att("ss:Format", "mm/dd/yyyy_hh:mm:ss")
-				.up()
-			.up()
-		.up()
-		;
-
-        child = child.ele("Worksheet").att("ss:Name", sheetTitle).ele("ss:Table");
-        columns.forEach(function(columnTitle) {
-            child = child.ele("Column").att("ss:AutoFitWidth", "1").up();
+        child = child.ele("ss:Worksheet").att("ss:Name", sheetTitle).ele("ss:Table");
+        columns.forEach(function(columnTitle, columnIndex) {
+        columnIndex += 1;
+            child = child.ele("ss:Column").att("ss:Index",columnIndex).att("ss:AutoFitWidth", "1").up();
         });
-        child = child.ele("Row");
+        child = child.ele("ss:Row");
         columns.forEach(function(columnTitle){
-            child = child.ele("Cell").ele("Data").att("ss:Type", "String").txt(columnTitle).up().up();
+            child = child.ele("ss:Cell").ele("ss:Data").att("ss:Type", "String").txt(columnTitle).up().up();
         });
         child = child.up();
         rows.forEach(function (record) {
-            child = child.ele("Row");
+            child = child.ele("ss:Row");
             columns.forEach(function (columnTitle, columnIndex) {
+            columnIndex += 1;
                 var val = record[columnTitle];
 
                 if (typeof val !== 'function') {
                     if (val && typeof val === 'object') {
                         if (val instanceof Date) {
-                            child = child.ele("Cell").att("ss:Index", columnIndex).att("ss:StyleID","DateTime").ele("Data").att("ss:Type", "DateTime").raw(_isoDateString(val)).up().up();
+                            child = child.ele("ss:Cell").att("ss:Index", columnIndex).att("ss:StyleID","DateTime").ele("Data").att("ss:Type", "DateTime").raw(_isoDateString(val)).up().up();
                         } else {
                             if (val instanceof Array) { }
                         } 
                     } else {
                         if ((typeof val) === 'boolean') {
                         } else if ((typeof val) === 'number') {
-                            child = child.ele("Cell").att("ss:Index", columnIndex).ele("Data").att("ss:Type", "Number").txt(val).up().up();
+                            child = child.ele("ss:Cell").att("ss:Index", columnIndex).ele("ss:Data").att("ss:Type", "Number").txt(val).up().up();
                         } else if (val !== undefined && val !== null){
                                     //chr = str.match(chars);
                             var str = val.split('\u000b').join(' ');
-                            child = child.ele("Cell").att("ss:Index", columnIndex).ele("Data").att("ss:Type", "String").txt(str).up().up(); 
+                            child = child.ele("ss:Cell").att("ss:Index", columnIndex).ele("ss:Data").att("ss:Type", "String").txt(str).up().up(); 
                         }
                     }
                 }
