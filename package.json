@@ -28,7 +28,7 @@
   ],
   "main": "index.js",
   "dependencies": {
-    "xmlbuilder": "^2.4.3"
+    "xmlbuilder": "^10.1.1"
   },
   "scripts": {
     "test": "for i in tests/test*.js; do node \"$i\"; done"
